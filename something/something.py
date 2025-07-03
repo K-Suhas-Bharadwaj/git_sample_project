@@ -36,3 +36,18 @@ if field_map_obj is not None:
                             print("📥 IN clause values:", in_values)
             except (IndexError, ValueError):
                 print("⚠ Could not find next SQLExpressionPart object.")
+
+str_s = "=ARRAYFORMULA(
+  BYROW(A:A,
+    LAMBDA(r,
+      TEXTJOIN(
+        " ", TRUE,
+        FILTER(
+          FLATTEN(SPLIT(TRIM(r), {" ", CHAR(10)})),
+          REGEXMATCH(FLATTEN(SPLIT(TRIM(r), {" ", CHAR(10)})), "^[A-Z_]{2,}$")
+        )
+      )
+    )
+  )
+)
+"
