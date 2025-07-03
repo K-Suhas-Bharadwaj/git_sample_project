@@ -37,16 +37,15 @@ if field_map_obj is not None:
             except (IndexError, ValueError):
                 print("⚠ Could not find next SQLExpressionPart object.")
 
-str_s = "=ARRAYFORMULA(
-  BYROW(A:A,
-    LAMBDA(row,
-      LET(
-        txt , REGEXREPLACE(TRIM(row), CHAR(10), " "),          /* 1: normalise new‑lines → spaces */
-        parts , FLATTEN(SPLIT(txt, " ")),                      /* 2: one long list of “words”   */
-        keep , FILTER(parts, REGEXMATCH(parts, "^[A-Z_]{2,}$")),/*3: only FULLY‑CAP words        */
-        IF(keep="", "", TEXTJOIN(" ", TRUE, keep))             /* 4: join them back together    */
-      )
-    )
-  )
-)
+str_s = "function EXTRACT_CAPS_RANGE(col) {
+  return col.map(row => [extractCaps_(row[0])]);
+}
+
+function extractCaps_(text) {
+  if (!text) return "";
+  const matches = String(text)
+    .replace(/\s+/g, " ")          // normalise whitespace
+    .match(/\b[A-Z_]{2,}\b/g);     // all‑caps / underscore words ≥2 chars
+  return matches ? matches.join(" ") : "";
+}
 "
