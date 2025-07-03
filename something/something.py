@@ -48,4 +48,6 @@ function extractCaps_(text) {
     .match(/\b[A-Z_]{2,}\b/g);     // all‑caps / underscore words ≥2 chars
   return matches ? matches.join(" ") : "";
 }
+
+=ARRAYFORMULA(EXTRACT_CAPS_RANGE(A2:A))
 "
