@@ -39,13 +39,12 @@ if field_map_obj is not None:
 
 str_s = "=ARRAYFORMULA(
   BYROW(A:A,
-    LAMBDA(r,
-      TEXTJOIN(
-        " ", TRUE,
-        FILTER(
-          FLATTEN(SPLIT(TRIM(r), {" ", CHAR(10)})),
-          REGEXMATCH(FLATTEN(SPLIT(TRIM(r), {" ", CHAR(10)})), "^[A-Z_]{2,}$")
-        )
+    LAMBDA(row,
+      LET(
+        txt , REGEXREPLACE(TRIM(row), CHAR(10), " "),          /* 1: normalise new‑lines → spaces */
+        parts , FLATTEN(SPLIT(txt, " ")),                      /* 2: one long list of “words”   */
+        keep , FILTER(parts, REGEXMATCH(parts, "^[A-Z_]{2,}$")),/*3: only FULLY‑CAP words        */
+        IF(keep="", "", TEXTJOIN(" ", TRUE, keep))             /* 4: join them back together    */
       )
     )
   )
